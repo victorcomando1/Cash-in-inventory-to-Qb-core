@@ -4,7 +4,7 @@
         amount = tonumber(amount)
         if amount < 0 then return false end
 
-        local oldAmount = self.PlayerData.money[moneytype] or 0
+        local oldAmount = self.Functions.GetMoney(moneytype)
 
         if moneytype == 'money' or moneytype == 'cash' then
             local item = self.Functions.GetItemByName('money')
@@ -12,9 +12,9 @@
                 self.Functions.RemoveItem('money', item.amount)
             end
             self.Functions.AddItem('money', amount)
+        else
+            self.PlayerData.money[moneytype] = amount
         end
-
-        self.PlayerData.money[moneytype] = amount
 
         if not self.Offline then
             self.Functions.UpdatePlayerData()
@@ -28,7 +28,7 @@
                     amount,
                     moneytype,
                     moneytype,
-                    self.PlayerData.money[moneytype],
+                    self.Functions.GetMoney(moneytype),
                     reason
                 ),
                 false
@@ -59,9 +59,8 @@
         else
             if not self.PlayerData.money[moneytype] then return false end
             newAmount = self.PlayerData.money[moneytype] + amount
+            self.PlayerData.money[moneytype] = newAmount
         end
-
-        self.PlayerData.money[moneytype] = newAmount
 
         if not self.Offline then
             self.Functions.UpdatePlayerData()
@@ -118,9 +117,8 @@
             end
 
             newAmount = self.PlayerData.money[moneytype] - amount
+            self.PlayerData.money[moneytype] = newAmount
         end
-
-        self.PlayerData.money[moneytype] = newAmount
 
         if not self.Offline then
             self.Functions.UpdatePlayerData()
@@ -153,11 +151,14 @@
     end
 
     function self.Functions.GetMoney(moneytype)
-        if not moneytype then return false end
+        if not moneytype then return 0 end
+
         moneytype = moneytype:lower()
+
         if moneytype == 'money' or moneytype == 'cash' then
             local item = self.Functions.GetItemByName('money')
             return item and item.amount or 0
         end
+
         return self.PlayerData.money[moneytype] or 0
     end
