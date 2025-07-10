@@ -19,18 +19,20 @@
         if not self.Offline then
             self.Functions.UpdatePlayerData()
 
-            TriggerEvent('qb-log:server:CreateLog', 'playermoney', 'SetMoney', 'green', ([
-                '**%s (Citizenid: %s | Id: %s)**\n> $%s (%s) Definido\n> Novo saldo %s: %s\n> Motivo: %s'
-            ]):format(
-                GetPlayerName(self.PlayerData.source),
-                self.PlayerData.citizenid,
-                self.PlayerData.source,
-                amount,
-                moneytype,
-                moneytype,
-                self.PlayerData.money[moneytype],
-                reason
-            ), false)
+            TriggerEvent('qb-log:server:CreateLog', 'playermoney', 'SetMoney', 'green',
+                ('**%s (Citizenid: %s | Id: %s)**\n> $%s (%s) Definido\n> Novo saldo %s: %s\n> Motivo: %s')
+                :format(
+                    GetPlayerName(self.PlayerData.source),
+                    self.PlayerData.citizenid,
+                    self.PlayerData.source,
+                    amount,
+                    moneytype,
+                    moneytype,
+                    self.PlayerData.money[moneytype],
+                    reason
+                ),
+                false
+            )
 
             TriggerClientEvent('hud:client:OnMoneyChange', self.PlayerData.source, moneytype, math.abs(amount - oldAmount), false)
             TriggerClientEvent('QBCore:Client:OnMoneyChange', self.PlayerData.source, moneytype, amount, 'set', reason)
